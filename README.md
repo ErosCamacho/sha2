@@ -43,7 +43,7 @@ The IP module is delivered in the ```sha2_xl_3_0``` folder.
 The design of the core part of the IP module is depicted in the next figure.
 The Message Schedule is based on a Linear Feedback Register (LFSR) that feeds the Arithmetic Unit. The core of the SHA2 performs the operation in each cycle in which it is used the correspond value of _K_. 
 
-![](images/sha2core.png)
+![](images/sha2_core.png)
 
 The IP integration is finished adding an user interface in which it is possible to modify the next parameters of module:
 - ```Version```: selection of the algorithm of SHA2 that are compiled in the FIPS 198-4. 
