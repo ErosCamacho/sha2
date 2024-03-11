@@ -48,7 +48,7 @@ The Message Schedule is based on a Linear Feedback Register (LFSR) that feeds th
 The IP integration is finished adding an user interface in which it is possible to modify the next parameters of module:
 - ```Version```: selection of the algorithm of SHA2 that are compiled in the FIPS 198-4. 
 
-<img src="images/ip_inter_sha2.png" alt="" width="600"/>
+<img src="images/ip_inter_sha2.PNG" alt="" width="600"/>
 
 For further information, see Chapter 3 of the [PhD Dissertation](https://github.com/ErosCamacho/PhD_Dissertation/blob/main/PhD_Thesis_Eros_Camacho_Ruiz_vFinal_rev.pdf)
 
