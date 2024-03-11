@@ -1,92 +1,154 @@
-# SHA2
+# SHA2 HW IP module
 
+2024-03-11 - Eros Camacho-Ruiz (camacho@imse-cnm.csic.es)
 
+This is the repository of the evaluation carried out in the SHA2 section presented in the [PhD Dissertation](https://github.com/ErosCamacho/PhD_Dissertation/blob/main/PhD_Thesis_Eros_Camacho_Ruiz_vFinal_rev.pdf) entitled: <b>"Design of a hardware Root-of-Trust on embedded systems"</b>
 
-## Getting started
+The main idea of this repository is, following the standard FIPS 198-4:
+- Present the IP Module developed in the context of the dissertation. 
+- Present an extensible test functionality in which the NIST Tests Vector have been validated. 
+- Define a demo for the modules presented.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+*Note: All the content of this repository has been implemented using the Pynq Framework.*
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+<!-- TABLE OF CONTENTS -->
+## Table of Contents
+  <ol>
+    <li><a href="#dir-struc">Directory structure</a></li>
+    <li><a href="#ip-integ">IP Integration</a></li>
+    <li><a href="#pre-pynqz2">Prerequisites for the Pynq-Z2 platform</a></li>
+    <li><a href="#ins-test">Installation and Use of the Test</a></li>
+	<li><a href="#ins-demo">Installation and Use of the Demo</a></li>
+	<li><a href="#example">Example of the Demo</a></li>
+    <li><a href="#note">Note for version</a></li>
+    <li><a href="#contact">Contact</a></li>
+	<li><a href="#developers">Developers</a></li>
+  </ol>
 
-## Add your files
+## Directory structure <a name="dir-struc"></a>
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- sha2_xl_3_0: the IP module of the SHA3/SHAKE algorithm.
+- SHA2_xl_v3: the folder that contains the software implementation and the HW call drivers.
+    - files: this folder contains the files to be parsed in the demo of the SHA2.
+	- NIST_TestVector: the NIST Test Vector for SHA2.
+    - sha2: this folder contains all the files to implement and use the SHA2 either in HW and SW version.
+    - sha2_test.c: main file to sha2 tests
+	- sha2_demo.c: main file to sha3 demo
+    - Makefile: to generate the executables for the library
+- README.md: this file 
 
+## IP Integration <a name="ip-integ"></a>
+
+The IP module is delivered in the ```sha2_xl_3_0``` folder. 
+The design of the core part of the IP module is depicted in the next figure.
+The Message Schedule is based on a Linear Feedback Register (LFSR) that feeds the Arithmetic Unit. The core of the SHA2 performs the operation in each cycle in which it is used the correspond value of _K_. 
+
+![](images/sha2core.png)
+
+The IP integration is finished adding an user interface in which it is possible to modify the next parameters of module:
+- ```Version```: selection of the algorithm of SHA2 that are compiled in the FIPS 198-4. 
+
+<img src="images/ip_inter_sha2.png" alt="" width="600"/>
+
+For further information, see Chapter 3 of the [PhD Dissertation](https://github.com/ErosCamacho/PhD_Dissertation/blob/main/PhD_Thesis_Eros_Camacho_Ruiz_vFinal_rev.pdf)
+
+## Prerequisites for the Pynq-Z2 platform <a name="pre-pynqz2"></a>
+
+1. Download the PYNQ C-API from https://github.com/mesham/pynq_api
+
+2. Then, issue ```make```. Once it is built, issue ```sudo make install```. 
+
+## Installation and Use of the Test <a name="ins-test"></a>
+
+The Test section performs the NIST Test Vector of each algorithm. 
+
+1. For compilation of a specific test for sha2:
+
+```bash
+make sha2_XXX_test
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/hwsec/sha2.git
-git branch -M main
-git push -uf origin main
+
+where `XXX` can be: `224, 256, 384, 512, 512_224, 512_256`. So, for example if the user wants to compile the case of sha2-256, 
+they must issue: `make sha2_256_test`
+
+2. For the use, the program has different input variables:
+	- `-h` : Show the help.
+	- `-hh` : Show the extended help.
+	- `-v` : Verbose Level:
+		- `1`: Show the Acceleration of each NIST run (By default).
+		- `2`: Show the Acceleration + Output Data of each NIST run.
+		- `3`: Show the Acceleration + Input/Output Data of each NIST run.
+	- `-b` : Selection of NIST Bit Test.
+		- `1`: Use the NIST Byte Test **(By default)**.
+		- `2`: Use the NIST Bit Test. ***WARNING: The reference SW is not prepared for this test.***
+	- `-n` : [Number] of test executions.
+	- `-s` : Stop in each run.
+	- `-i` : Select de initial value for the sample run. **It is not mandatory**
+	- `-f` : Select de final value for the sample run. **It is not mandatory**
+
+An example, if it is desired to performance 10 tests on the sha2-256, using the NIST Byte Test and those tests between 10 and 20, it has to be typed: `sha2_256_test -n 10 -b 1 -i 10 -f 20`.
+
+## Installation and Use of the Demo <a name="ins-demo"></a>
+
+The main idea of the Demo is to use the hardware implementations in real use of cases. For that it has been given the option to input either a prompt message or a file in ASCII format or hexadecimal format. 
+
+1. For compilation of a specific demo for sha3:
+
+```bash
+make sha2_XXX_demo
 ```
 
-## Integrate with your tools
+where `XXX` can be: `224, 256, 384, 512, 512_224, 512_256`. So, for example if the user wants to compile the case of sha2-256, 
+they must issue: `make sha2_256_demo`
 
-- [ ] [Set up project integrations](https://gitlab.com/hwsec/sha2/-/settings/integrations)
+2. For the use, the program has different input variables:
+	- `-h` : Show the help.
+	- `-v`: Verbose Level:
+		- `1`: Show the Acceleration (By default).
+		- `2`: Show the Acceleration + Output Data.
+		- `3`: Show the Acceleration + Input/Output Data.
+	- `-m`: Input message (HEX format).
+	- `-t`: Input message (TXT format).
+	- `-mf`: Input HEX file [file name].
+	- `-tf`: Input TXT file [file name].
 
-## Collaborate with your team
+The results of the demo can also be checked in: https://emn178.github.io/online-tools/sha256.html.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Example of the Demo <a name="example"></a>
 
-## Test and Deploy
+There are several use of case of this demo, but in general it is going to be used to hash an input text in hex format and a file.
 
-Use the built-in continuous integration in GitLab.
+1. So, for example if the message `0x0123456789` is going to be hashed using the sha2-256
+```bash
+./sha2_256_demo -m 0123456789
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+2. In this case if it is the content of a file (in hexadecimal) what is going to be hashed: 
+```bash
+./sha2_256_demo -mf files/input_data.txt
+```
 
-***
+The execution of both examples can be shown in the next figure:
 
-# Editing this README
+<img src="images/demo_example.png" alt="" width="600"/>
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## Note for version <a name="note"></a>
+### v. 1.0
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+* Reordered the repository structure.
+* Added a Readme file. 
 
-## Name
-Choose a self-explaining name for your project.
+## Contact <a name="contact"></a>
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+**Eros Camacho-Ruiz** - (camacho@imse-cnm.csic.es)
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+_Hardware Cryptography Researcher_ 
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## Developers <a name="developers"></a>
+Eros Camacho-Ruiz
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+_Instituto de Microelectrónica de Sevilla (IMSE-CNM), CSIC, Universidad de Sevilla, Seville, Spain_
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
