@@ -1,10 +1,9 @@
-#include "params.h"
-#include "sha2_sw/sha2_224.h"
-#include "sha2_sw/sha2_256.h"
-#include "sha2_sw/sha2_384.h"
-#include "sha2_sw/sha2_512.h"
-#include "sha2_sw/sha2_512_224.h"
-#include "sha2_sw/sha2_512_256.h"
+#include "sha2_224.h"
+#include "sha2_256.h"
+#include "sha2_384.h"
+#include "sha2_512.h"
+#include "sha2_512_224.h"
+#include "sha2_512_256.h"
 
 #ifdef SHA_224
 

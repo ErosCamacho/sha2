@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include "pynq_api.h"
-#include "Funciones_HW.h"
-#include "Funcion_Test.h"
-#include "sha2_hw.h"
-#include "sha2_sw.h"
-#include "params.h"
+#include "sha2/common/Funciones_HW.h"
+#include "sha2/common/Funcion_Test.h"
+#include "sha2/hw/sha2_hw.h"
+#include "sha2/sw/sha2_sw.h"
+#include "sha2/hw/params.h"
 
 void main(int argc, char** argv) {
 
@@ -23,7 +23,7 @@ void main(int argc, char** argv) {
 
 		if (argv[arg][0] == '-') {
 			if (argv[arg][1] == 'h') {
-				printf("\n Usage: ./sha3_XXX_test [-h] [-hh] [-v] [-b] [-n] [-s] \n");
+				printf("\n Usage: ./sha2_XXX_test [-h] [-hh] [-v] [-b] [-n] [-s] \n");
 				printf("\n -h : Show the help.");
 				printf("\n -hh: Show the extended help.");
 				printf("\n -v : Verbose Level:");

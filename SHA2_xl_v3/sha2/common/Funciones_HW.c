@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "pynq_api.h"
-#include "params.h"
+#include "../hw/params.h"
 
 void load_bitstream(int DBG) {
 
@@ -17,7 +17,7 @@ void load_bitstream(int DBG) {
 	else				sprintf(bitstream_file, "%s", "BD_wrapper_64.bit");
 	*/
 
-	sprintf(bitstream_file, "%s", "BD_wrapper.bit");
+	sprintf(bitstream_file, "%s", "sha2/bit/BD_wrapper.bit");
 
 	FILE* file;
 

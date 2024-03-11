@@ -1,10 +1,10 @@
 #include "sha2_sw.h"
-#include "sha2_sw/sha2_224.h"
-#include "sha2_sw/sha2_256.h"
-#include "sha2_sw/sha2_384.h"
-#include "sha2_sw/sha2_512.h"
-#include "sha2_sw/sha2_512_224.h"
-#include "sha2_sw/sha2_512_256.h"
+#include "sha2_224.h"
+#include "sha2_256.h"
+#include "sha2_384.h"
+#include "sha2_512.h"
+#include "sha2_512_224.h"
+#include "sha2_512_256.h"
 
 #if SHA_224
 void sha2_sw(sha2_ctx* context, unsigned char* data, size_t length, unsigned char* digest) {
